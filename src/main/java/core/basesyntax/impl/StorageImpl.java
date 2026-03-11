@@ -5,11 +5,16 @@ import core.basesyntax.Storage;
 public class StorageImpl<K, V> implements Storage<K, V> {
     private static final int ARRAYS_LENGTH = 10;
 
-    @SuppressWarnings("unchecked")
-    private final K[] keys = (K[]) new Object[ARRAYS_LENGTH];
-    @SuppressWarnings("unchecked")
-    private final V[] values = (V[]) new Object[ARRAYS_LENGTH];
+    private final K[] keys;
+    private final V[] values;
     private int size;
+
+    @SuppressWarnings("unchecked")
+    public StorageImpl() {
+        keys = (K[]) new Object[ARRAYS_LENGTH];
+        values = (V[]) new Object[ARRAYS_LENGTH];
+        size = 0;
+    }
 
     private int indexOfKey(K key) {
         for (int i = 0; i < size; i++) {
