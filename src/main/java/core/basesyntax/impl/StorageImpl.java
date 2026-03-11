@@ -5,27 +5,31 @@ import core.basesyntax.Storage;
 public class StorageImpl<K, V> implements Storage<K, V> {
     private static final int ARRAYS_LENGTH = 10;
 
-    private K[] keys;
-    private V[] values;
+    @SuppressWarnings("unchecked")
+    private final K[] keys = (K[]) new Object[ARRAYS_LENGTH];
+    @SuppressWarnings("unchecked")
+    private final V[] values = (V[]) new Object[ARRAYS_LENGTH];
     private int size;
 
-    @SuppressWarnings("unchecked")
-    public StorageImpl() {
-        keys = (K[]) new Object[ARRAYS_LENGTH];
-        values = (V[]) new Object[ARRAYS_LENGTH];
-        size = 0;
+    private int indexOfKey(K key) {
+        for (int i = 0; i < size; i++) {
+            if (keys[i] == null && key == null) {
+                return i;
+            }
+            if (keys[i] != null && keys[i].equals(key)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public void put(K key, V value) {
-        for (int i = 0; i < size; i++) {
-            if (keys[i] == null && key == null) {
-                values[i] = value;
-                return;
-            } else if (keys[i] != null && keys[i].equals(key)) {
-                values[i] = value;
-                return;
-            }
+        int index = indexOfKey(key);
+
+        if (index >= 0) {
+            values[index] = value;
+            return;
         }
 
         if (size < ARRAYS_LENGTH) {
@@ -39,14 +43,11 @@ public class StorageImpl<K, V> implements Storage<K, V> {
 
     @Override
     public V get(K key) {
-        for (int i = 0; i < size; i++) {
-            if (keys[i] == null && key == null) {
-                return values[i];
-            } else if (keys[i] != null && keys[i].equals(key)) {
-                return values[i];
-            }
-        }
+        int index = indexOfKey(key);
 
+        if (index >= 0) {
+            return values[index];
+        }
         return null;
     }
 
